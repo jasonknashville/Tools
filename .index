@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Homeownership Tools • Jason Kaczmarski Team</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #0b1220;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --accent-strong: #0ea5e9;
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --chip-bg: rgba(15, 118, 110, 0.12);
+      --chip-text: #a7f3d0;
+      --shadow-soft: 0 30px 80px rgba(15, 23, 42, 0.85);
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #1e293b 0, #020617 50%) fixed,
+        radial-gradient(circle at bottom right, #0f172a 0, #000000 55%) fixed;
+      color: var(--text-main);
+    }
+
+    .page-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1080px;
+      background: radial-gradient(circle at top left, #020617 0, #020617 35%, #020617ee 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      padding: 24px 22px 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr);
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: 1fr;
+        padding: 22px 18px 24px;
+      }
+    }
+
+    .glow-orbit {
+      position: absolute;
+      inset: -120px;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18) 0, transparent 55%),
+        radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.18) 0, transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .content-left {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-right: 12px;
+      border-right: 1px solid rgba(51, 65, 85, 0.8);
+    }
+
+    @media (max-width: 900px) {
+      .content-left {
+        border-right: none;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.8);
+        padding-right: 0;
+        padding-bottom: 16px;
+      }
+    }
+
+    .logo-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8 0, #0ea5e9 32%, #0f172a 90%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4),
+                  0 12px 25px rgba(15, 23, 42, 0.8);
+    }
+
+    .logo-circle span {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e5f2ff;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .logo-text-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f9fafb;
+    }
+
+    .logo-text-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .kicker {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+
+    .hero-title {
+      font-size: 1.75rem;
+      line-height: 1.1;
+      font-weight: 700;
+      margin: 4px 0 0;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, #38bdf8, #22c55e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-body {
+      font-size: 0.93rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin: 4px 0 0;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #e5e7eb;
+      background: rgba(15, 23, 42, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .chip-cta {
+      background: var(--chip-bg);
+      border-color: rgba(45, 212, 191, 0.6);
+      color: var(--chip-text);
+    }
+
+    .footnote {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: rgba(148, 163, 184, 0.9);
+    }
+
+    .footnote strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .content-right {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr), minmax(0, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .tool-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98) 0, #020617 60%);
+      padding: 12px 12px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .tool-card::before {
+      content: "";
+      position: absolute;
+      inset: -80px;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.2) 0, transparent 55%),
+        radial-gradient(circle at bottom right, rgba(34,197,94,0.16) 0, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      background: radial-gradient(circle at top left, rgba(15,23,42,1) 0, #020617 60%);
+    }
+
+    .tool-card:hover::before {
+      opacity: 1;
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tool-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .tool-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: rgba(209, 213, 219, 0.95);
+      background: rgba(15, 23, 42, 0.7);
+      white-space: nowrap;
+    }
+
+    .tool-body {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .tool-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 0.76rem;
+      color: rgba(148, 163, 184, 0.9);
+    }
+
+    .pill-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+    }
+
+    .pill-meta span:first-child {
+      font-size: 0.75rem;
+      color: #e5e7eb;
+    }
+
+    .pill-meta span:last-child {
+      font-size: 0.75rem;
+      color: rgba(148, 163, 184, 0.9);
+    }
+
+    .meta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-strong);
+    }
+
+    .meta-link span {
+      font-size: 0.8rem;
+    }
+
+    .meta-link svg {
+      width: 13px;
+      height: 13px;
+      opacity: 0.9;
+    }
+
+    .bottom-row {
+      margin-top: 6px;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 0.76rem;
+      color: rgba(148, 163, 184, 0.85);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="shell">
+      <div class="glow-orbit"></div>
+
+      <!-- LEFT PANEL -->
+      <div class="content-left">
+        <div class="logo-mark">
+          <div class="logo-circle">
+            <span>JK</span>
+          </div>
+          <div class="logo-text">
+            <div class="logo-text-main">Jason Kaczmarski Team</div>
+            <div class="logo-text-sub">Nashville • Middle Tennessee</div>
+          </div>
+        </div>
+
+        <div class="kicker">Interactive buyer + seller tools</div>
+
+        <h1 class="hero-title">
+          See the <span>math behind your move</span>.
+        </h1>
+
+        <p class="hero-body">
+          These simple calculators are here to help you pressure-test your plans:
+          when to move up, what waiting might really cost, and how today’s numbers
+          stack up against your goals.
+        </p>
+
+        <div class="chips">
+          <div class="chip chip-cta">
+            <div class="chip-dot"></div>
+            Built for Middle Tennessee buyers &amp; sellers
+          </div>
+          <div class="chip">No login required</div>
+          <div class="chip">Email results to yourself (and Jason)</div>
+        </div>
+
+        <p class="footnote">
+          <strong>Friendly disclaimer:</strong> These are illustrations, not financial advice or rate quotes.
+          When you’re ready to zoom in on your specific situation, reach out and we’ll go deeper together.
+        </p>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="content-right">
+        <div class="grid">
+          <!-- Move-Up Mortgage Calculator -->
+          <a
+            class="tool-card"
+            href="https://jasonknashville.github.io/move-up-mortgage-calculator/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="tool-header">
+              <div class="tool-title">Move-Up Mortgage Calculator</div>
+              <div class="tool-tag">Sell &amp; Buy</div>
+            </div>
+            <div class="tool-body">
+              Compare your current payment to a potential “next” home, with room to
+              plug in taxes, insurance, and estimates for buying and selling costs.
+            </div>
+            <div class="tool-meta-row">
+              <div class="pill-meta">
+                <span>Great for:</span>
+                <span>Homeowners wondering “Is it worth moving?”</span>
+              </div>
+              <div class="meta-link">
+                <span>Open tool</span>
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M7 4h9m0 0v9m0-9L7 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </a>
+
+          <!-- Cost of Waiting Calculator -->
+          <a
+            class="tool-card"
+            href="https://jasonknashville.github.io/cost-of-waiting-calculator/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="tool-header">
+              <div class="tool-title">Cost of Waiting Calculator</div>
+              <div class="tool-tag">Rent vs. Buy</div>
+            </div>
+            <div class="tool-body">
+              See how much rent you’ll pay while waiting for lower rates — and how that compares
+              to the equity you could build by buying sooner.
+            </div>
+            <div class="tool-meta-row">
+              <div class="pill-meta">
+                <span>Great for:</span>
+                <span>Renters timing their first (or next) purchase</span>
+              </div>
+              <div class="meta-link">
+                <span>Open tool</span>
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M7 4h9m0 0v9m0-9L7 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="bottom-row">
+          More tools coming soon — equity trackers, house-hacking scenarios, and seller net sheets.
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
